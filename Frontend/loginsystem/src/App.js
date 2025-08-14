@@ -1,11 +1,9 @@
 import './App.css';
 
+import RegisterForm from "./components/RegisterForm";
+
 function App() {
-  return (
-    <div className="App">
-      <h1>Hello from frontend</h1>
-    </div>
-  );
+  return <RegisterForm />;
 }
 
 export default App;
