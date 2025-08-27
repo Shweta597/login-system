@@ -56,6 +56,8 @@ class AuthController {
     // ✅ LOGIN ENDPOINT
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String password = request.get("password");
         Optional<User> userOptional = service.loginUser(email, password);
 
         if (userOptional.isPresent()) {
