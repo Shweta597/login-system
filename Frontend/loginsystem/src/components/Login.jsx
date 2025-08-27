@@ -28,7 +28,7 @@ export default function Login() {
 
       if (res.ok) {
         setMsg("✅ Login successful!");
-        navigate("/"); // redirect to home
+        // navigate("/"); // redirect to home
       } else {
         setMsg(`❌ ${data.error || "Invalid credentials"}`);
       }

@@ -59,8 +59,17 @@ class AuthController {
         String email = request.get("email");
         String password = request.get("password");
         Optional<User> userOptional = service.loginUser(email, password);
+        boolean isUserExist = service.userExists(email);
 
-        if (userOptional.isPresent()) {
+        if(!isUserExist){
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND) // 404 Not Found
+                .body(Map.of("error", "User Email not Registered, Please SignUp"));
+
+
+        } 
+        
+        else if(userOptional.isPresent()) {
             User user = userOptional.get();
             return ResponseEntity.ok(
                 Map.of(
@@ -70,7 +79,8 @@ class AuthController {
                     "email", user.getEmail()
                 )
             );
-        } else {
+        } 
+        else {
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED) // 401 Unauthorized
                 .body(Map.of("error", "Invalid email or password"));
