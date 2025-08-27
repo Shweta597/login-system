@@ -18,7 +18,7 @@ class AuthController {
         this.service = service;
     }
 
-    @GetMapping("/")
+    @GetMapping("/register")
     public String homePage(){
         return "Hello from homePage";
     }
@@ -49,6 +49,7 @@ class AuthController {
                 ));
         
             } catch (IllegalArgumentException e) {
+            System.out.println("Backend catch");
                 return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST) // 400 Bad Request
                     .body(Map.of("error", e.getMessage()));
