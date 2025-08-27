@@ -1,11 +1,10 @@
 package com.shwetashaw.loginsystem.controller;
 
-import com.shwetashaw.loginsystem.service.AuthService;
 import com.shwetashaw.loginsystem.entity.User;
-
+import com.shwetashaw.loginsystem.service.AuthService;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Optional; 
 import java.util.Map;
 
 @RestController
@@ -25,10 +24,9 @@ class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User request) {
-
         try {
             boolean isUser = service.userExists(request.getEmail());
-            
+
             if (isUser) {
                 return ResponseEntity
                     .status(HttpStatus.CONFLICT) // 409 Conflict
@@ -37,9 +35,9 @@ class AuthController {
                         "firstName", request.getFirstName()
                     ));
             }
-        
+
             User saved = service.registerUser(request);
-        
+
             return ResponseEntity
                 .status(HttpStatus.CREATED) // 201 Created
                 .body(Map.of(
@@ -47,20 +45,35 @@ class AuthController {
                     "lastName", saved.getLastName(),
                     "email", saved.getEmail()
                 ));
-        
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST) // 400 Bad Request
-                    .body(Map.of("error", e.getMessage()));
-            }
-        
-    
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST) // 400 Bad Request
+                .body(Map.of("error", e.getMessage()));
+        }
     }
-    
+
+    // ✅ LOGIN ENDPOINT
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> request) {
+        Optional<User> userOptional = service.loginUser(email, password);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return ResponseEntity.ok(
+                Map.of(
+                    "message", "Login successful",
+                    "firstName", user.getFirstName(),
+                    "lastName", user.getLastName(),
+                    "email", user.getEmail()
+                )
+            );
+        } else {
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED) // 401 Unauthorized
+                .body(Map.of("error", "Invalid email or password"));
+        }
+    }
 
     
 }
-
-//1 uder details
-//2 email already 
-//
