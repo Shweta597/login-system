@@ -1,17 +1,20 @@
+// Login.js
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Login.css";
+import { useNavigate, Link } from "react-router-dom";
+import "./css/Login.css";
 
-export default function Login() {
+export default function Login({ setLoggedIn, setEmail }) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [msg, setMsg] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // input handler
   const onChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // form submit
   const submit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -28,7 +31,9 @@ export default function Login() {
 
       if (res.ok) {
         setMsg("✅ Login successful!");
-        // navigate("/"); // redirect to home
+        setLoggedIn(true);
+        setEmail(form.email);
+        navigate("/"); // redirect home
       } else {
         setMsg(`❌ ${data.error || "Invalid credentials"}`);
       }
@@ -43,22 +48,40 @@ export default function Login() {
     <div className="login-container">
       <h2 className="login-title">Login</h2>
       <form onSubmit={submit} className="login-form">
-        <div className="form-group">
-          <label>Email</label>
-          <input type="email" name="email" value={form.email} onChange={onChange} required />
-        </div>
-
-        <div className="form-group">
-          <label>Password</label>
-          <input type="password" name="password" value={form.password} onChange={onChange} required />
-        </div>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={onChange}
+          required
+          className="input-field"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={onChange}
+          required
+          className="input-field"
+        />
 
         <button type="submit" disabled={loading} className="submit-btn">
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
 
-      {msg && <p className={`message ${msg.startsWith("✅") ? "success" : "error"}`}>{msg}</p>}
+      {msg && (
+        <p className={`message ${msg.startsWith("✅") ? "success" : "error"}`}>
+          {msg}
+        </p>
+      )}
+
+      {/* Link to Register */}
+      <p className="register-link">
+        Not registered? <Link to="/register">Create an account</Link>
+      </p>
     </div>
   );
 }
