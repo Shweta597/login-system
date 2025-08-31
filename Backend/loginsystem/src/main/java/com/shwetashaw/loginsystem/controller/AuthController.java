@@ -2,19 +2,22 @@ package com.shwetashaw.loginsystem.controller;
 
 import com.shwetashaw.loginsystem.entity.User;
 import com.shwetashaw.loginsystem.service.AuthService;
+import com.shwetashaw.loginsystem.security.JwtUtil;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional; 
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000") // Allow React app
+@CrossOrigin(origins = "http://localhost:3000")
 class AuthController {
 
     private final AuthService service;
+    private final JwtUtil jwtUtil;
 
-    AuthController(AuthService service){
+    AuthController(AuthService service,JwtUtil jwtUtil){
         this.service = service;
+        this.jwtUtil = jwtUtil;
     }
 
     @GetMapping("/")
@@ -54,10 +57,11 @@ class AuthController {
     }
 
     // ✅ LOGIN ENDPOINT
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<?> loginUser(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         String password = request.get("password");
+
         Optional<User> userOptional = service.loginUser(email, password);
         boolean isUserExist = service.userExists(email);
 
@@ -65,26 +69,24 @@ class AuthController {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND) // 404 Not Found
                 .body(Map.of("error", "User Email not Registered, Please SignUp"));
-
-
-        } 
-        
-        else if(userOptional.isPresent()) {
-            User user = userOptional.get();
-            return ResponseEntity.ok(
-                Map.of(
-                    "message", "Login successful",
-                    "firstName", user.getFirstName(),
-                    "lastName", user.getLastName(),
-                    "email", user.getEmail()
-                )
-            );
-        } 
-        else {
-            return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED) // 401 Unauthorized
-                .body(Map.of("error", "Invalid email or password"));
         }
+        
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid email or password"));
+        }
+
+        User user = userOptional.get();
+
+        // Generate JWT token 
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return ResponseEntity.ok(Map.of(
+            "message", "Login successful",
+            "token", token,
+            "firstName", user.getFirstName(),
+            "lastName", user.getLastName(),
+            "email", user.getEmail()
+        ));
     }
 
     

@@ -21,7 +21,7 @@ export default function Login({ setLoggedIn, setEmail }) {
     setMsg(null);
 
     try {
-      const res = await fetch("http://localhost:8080/login", {
+      const res = await fetch("http://localhost:8080/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -33,6 +33,9 @@ export default function Login({ setLoggedIn, setEmail }) {
         setMsg("✅ Login successful!");
         setLoggedIn(true);
         setEmail(form.email);
+        // 👇 Save JWT to localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("email", form.email);
         navigate("/"); // redirect home
       } else {
         setMsg(`❌ ${data.error || "Invalid credentials"}`);
