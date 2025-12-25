@@ -1,0 +1,107 @@
+/* Login.css */
+
+.login-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 35px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", sans-serif;
+  text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 25px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%; /* keep inputs aligned */
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box; /* ensures proper sizing */
+}
+
+.input-field:focus {
+  border-color: #0077ff;
+  box-shadow: 0 0 6px rgba(0, 119, 255, 0.4);
+  outline: none;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #4cafef, #0077ff);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #5cc7ff, #3399ff);
+}
+
+.submit-btn:disabled {
+  background: #bbb;
+  cursor: not-allowed;
+}
+
+.message {
+  margin-top: 18px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.message.success {
+  color: #2e7d32; /* green */
+}
+
+.message.error {
+  color: #d32f2f; /* red */
+}
+
+.register-link {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.register-link a {
+  color: #0077ff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.register-link a:hover {
+  color: #0056cc;
+}

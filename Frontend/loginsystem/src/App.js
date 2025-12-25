@@ -1,45 +1,48 @@
-// App.js
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Register from "./components/Register";
-
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
-
+import UploadPage from "./components/UploadPage";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
 
-  const handleLogout = async () => {
-    await fetch("http://localhost:8080/logout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
+  // ✅ Load state from localStorage on app start
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const storedEmail = localStorage.getItem("email");
+    if (token) {
+      setLoggedIn(true);
+      if (storedEmail) setEmail(storedEmail);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    // ✅ Clear from both state + localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
     setLoggedIn(false);
+    setEmail("");
   };
 
   return (
     <Router>
-      <nav style={{ display: "flex", justifyContent: "space-between", padding: "10px" }}>
-        <h2>Login System</h2>
-        <div>
-          {!loggedIn ? (
-            <>
-              <Link to="/login"><button>Login</button></Link>
-              <Link to="/register"><button>Signup</button></Link>
-            </>
-          ) : (
-            <button onClick={handleLogout}>Logout</button>
-          )}
-        </div>
-      </nav>
-
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
-        <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+        <Route
+          path="/"
+          element={<Home loggedIn={loggedIn} email={email} onLogout={handleLogout} />}
+        />
+        <Route
+          path="/login"
+          element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />}
+        />
+        <Route
+          path="/register"
+          element={<Register setLoggedIn={setLoggedIn} setEmail={setEmail} />}
+        />
+        <Route path="/upload" element={<UploadPage />} />
       </Routes>
     </Router>
   );
